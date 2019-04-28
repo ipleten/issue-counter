@@ -43,14 +43,16 @@ def get_prs_count(org, repo):
     else:
         return len(data)
 
-
+@app.route('/')
 @app.route('/<org>/<repo>', methods=['GET'])
-def get_issues(org, repo):
-    total_issues = get_repo_info(org, repo, 'open_issues_count')
-    prs_count = get_prs_count(org, repo)
-    opened_issues = total_issues - prs_count
-    return jsonify({'opened_issues': opened_issues, 'pr_count': prs_count})
-
+def get_issues(org='', repo=''):
+    if org and repo:
+        total_issues = get_repo_info(org, repo, 'open_issues_count')
+        prs_count = get_prs_count(org, repo)
+        opened_issues = total_issues - prs_count
+        return jsonify({'opened_issues': opened_issues, 'pr_count': prs_count})
+    else:
+        return jsonify({'error': 'You should specify name of repo e.g:"https://issue-counter.appspot.com/ipleten/issue-counter"'})
 
 if __name__ == '__main__':
     app.run(debug=True)
